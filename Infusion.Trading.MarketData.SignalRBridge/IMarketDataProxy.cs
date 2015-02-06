@@ -5,10 +5,10 @@ namespace Infusion.Trading.MarketData.SignalRBridge
 {
     public interface IMarketDataProxy
     {
-        event EventHandler<MarketData> MarketDataChanged;
+        event EventHandler<Quote> MarketDataChanged;
         event EventHandler<MarketState> MarketStateChanged;
 
-        IEnumerable<MarketData> GetAllMarketData(params string[] securityIds);
+        IEnumerable<Quote> GetAllMarketData(params string[] securityIds);
 
         IEnumerable<string> FilterBySecurityIds(params string[] securityIds);
 

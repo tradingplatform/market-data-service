@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Infusion.Trading.MarketData.SignalRBridge
+namespace Infusion.Trading.MarketData
 {
-    public class MarketData
+    public class Quote
     {
         private decimal _price;
 

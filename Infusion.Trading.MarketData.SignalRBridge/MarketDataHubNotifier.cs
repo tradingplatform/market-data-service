@@ -40,7 +40,7 @@ namespace Infusion.Trading.MarketData.SignalRBridge
             }
         }
 
-        private void HandleMarketDataChanged(object sender, MarketData marketData)
+        private void HandleMarketDataChanged(object sender, Quote marketData)
         {
             _clients.All.updateMarketData(marketData);
         }

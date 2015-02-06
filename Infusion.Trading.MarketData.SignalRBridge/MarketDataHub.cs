@@ -19,7 +19,7 @@ namespace Infusion.Trading.MarketData.SignalRBridge
             _marketDataProxy = marketDataProxy;
         }
 
-        public IEnumerable<MarketData> GetAllMarketData(params string[] securityIds)
+        public IEnumerable<Quote> GetAllMarketData(params string[] securityIds)
         {
             return _marketDataProxy.GetAllMarketData(securityIds);
         }

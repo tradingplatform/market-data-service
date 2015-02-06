@@ -37,7 +37,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="IQuoteService.cs" />
-    <Compile Include="MarketData.cs" />
+    <Compile Include="Quote.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
