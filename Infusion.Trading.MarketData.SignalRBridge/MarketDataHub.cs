@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNet.SignalR;
 using Microsoft.AspNet.SignalR.Hubs;
-using System;
 using System.Collections.Generic;
 
 namespace Infusion.Trading.MarketData.SignalRBridge
@@ -20,9 +19,14 @@ namespace Infusion.Trading.MarketData.SignalRBridge
             _marketDataProxy = marketDataProxy;
         }
 
-        public IEnumerable<MarketData> GetAllMarketData()
+        public IEnumerable<MarketData> GetAllMarketData(params string[] securityIds)
         {
-            return _marketDataProxy.GetAllMarketData();
+            return _marketDataProxy.GetAllMarketData(securityIds);
+        }
+
+        public IEnumerable<string> FilterBySecurityIds(params string[] securityIds)
+        {
+            return _marketDataProxy.FilterBySecurityIds(securityIds);
         }
 
         public string GetMarketState()

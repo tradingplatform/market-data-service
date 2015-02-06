@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
-using Microsoft.AspNet.SignalR.Hubs;
-using Microsoft.AspNet.SignalR;
 
 namespace Infusion.Trading.MarketData.SignalRBridge
 {
@@ -22,6 +21,8 @@ namespace Infusion.Trading.MarketData.SignalRBridge
 
         private readonly TimeSpan _updateInterval = TimeSpan.FromMilliseconds(250);
         private readonly Random _updateOrNotRandom = new Random();
+
+        private readonly HashSet<string> filterBySecurityIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
         private Timer _timer;
         private volatile bool _updatingMarketDataPrices;
@@ -47,9 +48,29 @@ namespace Infusion.Trading.MarketData.SignalRBridge
             private set { _marketState = value; }
         }
 
-        public IEnumerable<MarketData> GetAllMarketData()
+        public IEnumerable<MarketData> GetAllMarketData(params string[] securityIds)
         {
-            return _allMarketData.Values;
+            return securityIds == null || securityIds.Length == 0
+                 ? _allMarketData.Values
+                 : from symbol in securityIds
+                   select _allMarketData[symbol];
+        }
+
+        public IEnumerable<string> FilterBySecurityIds(params string[] securityIds)
+        {
+            filterBySecurityIds.Clear();
+
+            foreach (var id in from id in securityIds
+                               where id != null
+                               let trimmedId = id.Trim()
+                               where 0 < trimmedId.Length && trimmedId.Length <= 5
+                                  && trimmedId.All(char.IsLetter)
+                               select trimmedId)
+            {
+                filterBySecurityIds.Add(id);
+
+                yield return id;
+            }
         }
 
         public void OpenMarket()
@@ -128,7 +149,8 @@ namespace Infusion.Trading.MarketData.SignalRBridge
 
                     foreach (var marketData in _allMarketData.Values)
                     {
-                        if (TryUpdateMarketDataPrice(marketData))
+                        if (TryUpdateMarketDataPrice(marketData)
+                            && (filterBySecurityIds.Count == 0 || filterBySecurityIds.Contains(marketData.SecurityId)))
                         {
                             OnMarketDataChanged(marketData);
                         }

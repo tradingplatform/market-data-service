@@ -8,9 +8,12 @@ namespace Infusion.Trading.MarketData.SignalRBridge
         event EventHandler<MarketData> MarketDataChanged;
         event EventHandler<MarketState> MarketStateChanged;
 
-        IEnumerable<MarketData> GetAllMarketData();
+        IEnumerable<MarketData> GetAllMarketData(params string[] securityIds);
+
+        IEnumerable<string> FilterBySecurityIds(params string[] securityIds);
+
         MarketState MarketState { get; }
-        
+
         void OpenMarket();
         void CloseMarket();
     }
