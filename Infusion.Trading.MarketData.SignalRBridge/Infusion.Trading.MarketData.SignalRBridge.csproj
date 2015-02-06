@@ -115,7 +115,6 @@
     <Compile Include="MarketState.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="MarketData.cs" />
     <Compile Include="RandomMarketDataProxy.cs" />
     <Compile Include="MarketDataHub.cs" />
   </ItemGroup>
@@ -148,6 +147,10 @@
     <ProjectReference Include="..\Infusion.Trading.MarketData.QuoteService\Infusion.Trading.MarketData.QuoteService.csproj">
       <Project>{e588e687-7880-4f6e-91bc-dd1ecab3cba9}</Project>
       <Name>Infusion.Trading.MarketData.QuoteService</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Infusion.Trading.MarketData\Infusion.Trading.MarketData.csproj">
+      <Project>{f8b2ace2-b375-4fe1-b38c-1c2137dbc379}</Project>
+      <Name>Infusion.Trading.MarketData</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infusion.Trading.MarketData
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infusion.Trading.MarketData.QuoteService", "Infusion.Trading.MarketData.QuoteService\Infusion.Trading.MarketData.QuoteService.csproj", "{E588E687-7880-4F6E-91BC-DD1ECAB3CBA9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infusion.Trading.MarketData", "Infusion.Trading.MarketData\Infusion.Trading.MarketData.csproj", "{F8B2ACE2-B375-4FE1-B38C-1C2137DBC379}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{E588E687-7880-4F6E-91BC-DD1ECAB3CBA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E588E687-7880-4F6E-91BC-DD1ECAB3CBA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E588E687-7880-4F6E-91BC-DD1ECAB3CBA9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8B2ACE2-B375-4FE1-B38C-1C2137DBC379}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8B2ACE2-B375-4FE1-B38C-1C2137DBC379}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8B2ACE2-B375-4FE1-B38C-1C2137DBC379}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8B2ACE2-B375-4FE1-B38C-1C2137DBC379}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
