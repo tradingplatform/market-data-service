@@ -22,7 +22,7 @@ namespace Infusion.Trading.MarketData.SignalRBridge
         private readonly TimeSpan _updateInterval = TimeSpan.FromMilliseconds(250);
         private readonly Random _updateOrNotRandom = new Random();
 
-        private readonly HashSet<string> filterBySecurityIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        private readonly SecurityIdCollection filterBySecurityIds = new SecurityIdCollection();
 
         private Timer _timer;
         private volatile bool _updatingMarketDataPrices;
@@ -60,17 +60,7 @@ namespace Infusion.Trading.MarketData.SignalRBridge
         {
             filterBySecurityIds.Clear();
 
-            foreach (var id in from id in securityIds
-                               where id != null
-                               let trimmedId = id.Trim()
-                               where 0 < trimmedId.Length && trimmedId.Length <= 5
-                                  && trimmedId.All(char.IsLetter)
-                               select trimmedId)
-            {
-                filterBySecurityIds.Add(id);
-
-                yield return id;
-            }
+            return filterBySecurityIds.TryAddRange(securityIds);
         }
 
         public void OpenMarket()
@@ -195,6 +185,10 @@ namespace Infusion.Trading.MarketData.SignalRBridge
             {
                 MarketDataChanged(this, marketData);
             }
+        }
+
+        public void Dispose()
+        {
         }
     }
 }

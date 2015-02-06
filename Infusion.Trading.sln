@@ -14,6 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{2A59A8
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8A6B726C-8816-4778-AB0C-63DB48D9C0F2}"
 	ProjectSection(SolutionItems) = preProject
+		GoogleFinanceResponse-Example.json = GoogleFinanceResponse-Example.json
 		Infusion.Trading.vssettings = Infusion.Trading.vssettings
 	EndProjectSection
 EndProject

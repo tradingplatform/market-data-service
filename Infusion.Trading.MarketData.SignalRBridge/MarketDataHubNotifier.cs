@@ -1,10 +1,5 @@
 ﻿using Microsoft.AspNet.SignalR;
 using Microsoft.AspNet.SignalR.Hubs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infusion.Trading.MarketData.SignalRBridge
 {
@@ -14,7 +9,12 @@ namespace Infusion.Trading.MarketData.SignalRBridge
         private readonly IHubConnectionContext<dynamic> _clients;
 
         public MarketDataHubNotifier() :
-            this(RandomMarketDataProxy.Instance, GlobalHost.ConnectionManager.GetHubContext<MarketDataHub>().Clients)
+            this(RandomMarketDataProxy.Instance)
+        {
+        }
+
+        public MarketDataHubNotifier(IMarketDataProxy marketDataProxy) :
+            this(marketDataProxy, GlobalHost.ConnectionManager.GetHubContext<MarketDataHub>().Clients)
         {
         }
 
@@ -26,7 +26,7 @@ namespace Infusion.Trading.MarketData.SignalRBridge
             _marketDataProxy.MarketStateChanged += HandleMarketStateChanged;
             _marketDataProxy.MarketDataChanged += HandleMarketDataChanged;
         }
-        
+
         private void HandleMarketStateChanged(object sender, MarketState marketState)
         {
             switch (marketState)

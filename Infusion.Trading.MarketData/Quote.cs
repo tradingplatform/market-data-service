@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.Contracts;
 
 namespace Infusion.Trading.MarketData
 {
@@ -61,6 +62,19 @@ namespace Infusion.Trading.MarketData
                     DayHigh = _price;
                 }
             }
+        }
+
+        public Quote()
+        {
+        }
+
+        public Quote(string securityId, decimal price, decimal lastChange)
+        {
+            Contract.Requires(!string.IsNullOrWhiteSpace(securityId));
+
+            this.SecurityId = securityId;
+            this.Price = price;
+            this.LastChange = lastChange;
         }
     }
 }

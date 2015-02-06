@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Infusion.Trading.MarketData.SignalRBridge
 {
-    public interface IMarketDataProxy
+    public interface IMarketDataProxy : IDisposable
     {
         event EventHandler<Quote> MarketDataChanged;
         event EventHandler<MarketState> MarketStateChanged;
