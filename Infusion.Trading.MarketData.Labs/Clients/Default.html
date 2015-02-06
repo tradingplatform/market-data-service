@@ -1,0 +1,194 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Infusion - Market Data - Client Experiment</title>
+    <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+    <script src="http://ajax.aspnetcdn.com/ajax/signalr/jquery.signalr-2.2.0.min.js"></script>
+    <script>
+        var baseHubUrl = "http://localhost";
+        var hubUrl = baseHubUrl + "/signalr/hubs";
+        var server, status;
+
+        $(function () {
+            status = $("#status_input");
+
+            loadHub();
+        });
+
+        function loadHub() {
+            status.text("Loading hub...");
+
+            $.getScript(hubUrl)
+                .error(function (e) {
+                    status.text("Error loading hub: " + e.message + ". Retrying in 1 second.");
+
+                    setTimeout(loadHub, 1000);
+                })
+                .success(connect);
+        }
+
+        function connect() {
+            status.text("Connecting...");
+
+            $.connection.hub.url = baseHubUrl + "/signalr";
+
+            var marketData = $.connection.marketData;
+
+            server = marketData.server;
+
+            marketData.client.marketOpened = marketOpened;
+
+            marketData.client.marketClosed = marketClosed;
+
+            marketData.client.updateMarketData = updateMarketData;
+
+            $.connection.hub.connectionSlow(function () {
+                status.text("Connection is slow...");
+            });
+
+            $.connection.hub.reconnecting(function () {
+                status.text("Reconnecting...");
+            });
+
+            $.connection.hub.start()
+                .fail(function (e) {
+                    status.text("Error connecting: " + e.message + ". Aborting.");
+                })
+                .done(function () {
+                    status.text("Connected");
+
+                    if (get_symbolsInput().length > 0)
+                        filterSymbols();
+                });
+        }
+
+        function marketOpened() {
+            status.text("Marked opened");
+        }
+
+        function marketClosed() {
+            status.text("Marked closed");
+        }
+
+        function updateMarketData(data) {
+            var ticks = $("#ticks");
+
+            var tick = ticks.children("#" + data.SecurityId);
+
+            if (tick.length == 0) {
+                tick = $("<div class=\"tick\" id=\"" + data.SecurityId + "\"></div>");
+                ticks.append(tick);
+            }
+
+            update(tick, data);
+        }
+
+        function update(tick, data) {
+            var arrow;
+
+            if (data.Change > 0) {
+                arrow = "&uarr;";
+
+                if (!tick.hasClass("up"))
+                    tick.addClass("up");
+                if (tick.hasClass("down"))
+                    tick.removeClass("down");
+            } else if (data.Change < 0) {
+                arrow = "&darr;";
+
+                if (!tick.hasClass("down"))
+                    tick.addClass("down");
+                if (tick.hasClass("up"))
+                    tick.removeClass("up");
+            } else {
+                arrow = "";
+
+                tick.removeClass("up");
+                tick.removeClass("down");
+            }
+
+            tick.html(data.SecurityId + "&nbsp;"
+                + arrow + Math.abs(data.Change)
+                + "&nbsp;(" + data.DayOpen + ":&nbsp;" + data.DayLow + "-" + data.DayHigh + ")"
+                + "&nbsp;<span class=\"price\">" + data.Price + "</span>");
+        }
+
+        function get_symbolsInput() {
+            return $("#symbols_input").val().split(",");
+        }
+
+        function filterSymbols() {
+            if (server !== undefined) {
+                status.text("Applying change filter...");
+
+                var symbols = get_symbolsInput();
+
+                server.filterBySecurityIds(symbols)
+                      .fail(function (e) {
+                          status.text("Failed to apply filter: " + e.message);
+                      })
+                      .done(function (validatedSymbols) {
+                          status.text(validatedSymbols.length > 0 ? "Filter applied." : "Filter removed.");
+
+                          var ticks = $("#ticks").children();
+
+                          for (var i = 0; i < ticks.length; i++) {
+                              var tick = $(ticks[i]);
+
+                              if (validatedSymbols.indexOf(tick.attr("id")) > -1)
+                                  tick.removeClass("excluded");
+                              else
+                                  tick.removeClass("up").removeClass("down").addClass("excluded");
+                          }
+                      });
+            }
+        }
+    </script>
+
+    <style>
+        section {
+            margin: 10px;
+        }
+
+        #status_input {
+            color: darkgray;
+        }
+
+        .tick {
+        }
+
+            .tick .price {
+                font-weight: bold;
+            }
+
+            .tick.excluded {
+                color: lightgray;
+            }
+
+            .tick.up {
+                color: green;
+            }
+
+            .tick.down {
+                color: red;
+            }
+    </style>
+</head>
+<body>
+    <section>
+        <form onsubmit="return false;">
+            <label for="symbols">Symbols (comma-separated): </label>
+            <input id="symbols_input" name="symbols" />
+            <button onclick="filterSymbols();">Filter</button>
+        </form>
+    </section>
+
+    <section>
+        <div id="ticks"></div>
+    </section>
+
+    <section>
+        <div id="status_input"></div>
+    </section>
+</body>
+</html>
