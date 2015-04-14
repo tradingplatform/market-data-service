@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
-using Microsoft.AspNet.SignalR.Hubs;
-using Microsoft.AspNet.SignalR;
 
 namespace Infusion.Trading.MarketData.SignalRBridge
 {
@@ -15,13 +14,15 @@ namespace Infusion.Trading.MarketData.SignalRBridge
         private readonly object _marketStateLock = new object();
         private readonly object _updateMarketDataLock = new object();
 
-        private readonly ConcurrentDictionary<string, MarketData> _allMarketData = new ConcurrentDictionary<string, MarketData>();
+        private readonly ConcurrentDictionary<string, Quote> _allMarketData = new ConcurrentDictionary<string, Quote>();
 
         // Stock can go up or down by a percentage of this factor on each change
         private readonly double _rangePercent = 0.002;
 
         private readonly TimeSpan _updateInterval = TimeSpan.FromMilliseconds(250);
         private readonly Random _updateOrNotRandom = new Random();
+
+        private readonly SecurityIdCollection filterBySecurityIds = new SecurityIdCollection();
 
         private Timer _timer;
         private volatile bool _updatingMarketDataPrices;
@@ -33,7 +34,7 @@ namespace Infusion.Trading.MarketData.SignalRBridge
             OpenMarket();
         }
 
-        public event EventHandler<MarketData> MarketDataChanged;
+        public event EventHandler<Quote> MarketDataChanged;
         public event EventHandler<MarketState> MarketStateChanged;
 
         public static RandomMarketDataProxy Instance
@@ -47,9 +48,19 @@ namespace Infusion.Trading.MarketData.SignalRBridge
             private set { _marketState = value; }
         }
 
-        public IEnumerable<MarketData> GetAllMarketData()
+        public IEnumerable<Quote> GetAllMarketData(params string[] securityIds)
         {
-            return _allMarketData.Values;
+            return securityIds == null || securityIds.Length == 0
+                 ? _allMarketData.Values
+                 : from symbol in securityIds
+                   select _allMarketData[symbol];
+        }
+
+        public IEnumerable<string> FilterBySecurityIds(params string[] securityIds)
+        {
+            filterBySecurityIds.Clear();
+
+            return filterBySecurityIds.TryAddRange(securityIds);
         }
 
         public void OpenMarket()
@@ -89,29 +100,29 @@ namespace Infusion.Trading.MarketData.SignalRBridge
         {
             _allMarketData.Clear();
 
-            List<MarketData> allMarketData =
-                new List<MarketData>
+            List<Quote> allMarketData =
+                new List<Quote>
                 {
-                    new MarketData { SecurityId = "KRX", Price = 75.86m },
-                    new MarketData { SecurityId = "FB", Price = 77.83m },
-                    new MarketData { SecurityId = "TWTR", Price = 37.10m },
-                    new MarketData { SecurityId = "AMZN", Price = 307.32m },
-                    new MarketData { SecurityId = "EBAY", Price = 55.77m },
-                    new MarketData { SecurityId = "NFLX", Price = 334.48m },
-                    new MarketData { SecurityId = "CI", Price = 101.73m },
-                    new MarketData { SecurityId = "AET", Price = 87.30m },
-                    new MarketData { SecurityId = "HUM", Price = 143.60m },
-                    new MarketData { SecurityId = "UNH", Price = 98.76m },
-                    new MarketData { SecurityId = "JPM", Price = 60.04m },
-                    new MarketData { SecurityId = "FNMA", Price = 2.24m },
-                    new MarketData { SecurityId = "MS", Price = 36.25m },
-                    new MarketData { SecurityId = "WFC", Price = 53.70m },
-                    new MarketData { SecurityId = "NKE", Price = 96.17m },
-                    new MarketData { SecurityId = "BMW", Price = 87.988m },
-                    new MarketData { SecurityId = "GM", Price = 31.57m },
-                    new MarketData { SecurityId = "MSFT", Price = 46.95m },
-                    new MarketData { SecurityId = "AAPL", Price = 109.73m },
-                    new MarketData { SecurityId = "GOOG", Price = 518.66m }
+                    new Quote { SecurityId = "KRX", Price = 75.86m },
+                    new Quote { SecurityId = "FB", Price = 77.83m },
+                    new Quote { SecurityId = "TWTR", Price = 37.10m },
+                    new Quote { SecurityId = "AMZN", Price = 307.32m },
+                    new Quote { SecurityId = "EBAY", Price = 55.77m },
+                    new Quote { SecurityId = "NFLX", Price = 334.48m },
+                    new Quote { SecurityId = "CI", Price = 101.73m },
+                    new Quote { SecurityId = "AET", Price = 87.30m },
+                    new Quote { SecurityId = "HUM", Price = 143.60m },
+                    new Quote { SecurityId = "UNH", Price = 98.76m },
+                    new Quote { SecurityId = "JPM", Price = 60.04m },
+                    new Quote { SecurityId = "FNMA", Price = 2.24m },
+                    new Quote { SecurityId = "MS", Price = 36.25m },
+                    new Quote { SecurityId = "WFC", Price = 53.70m },
+                    new Quote { SecurityId = "NKE", Price = 96.17m },
+                    new Quote { SecurityId = "BMW", Price = 87.988m },
+                    new Quote { SecurityId = "GM", Price = 31.57m },
+                    new Quote { SecurityId = "MSFT", Price = 46.95m },
+                    new Quote { SecurityId = "AAPL", Price = 109.73m },
+                    new Quote { SecurityId = "GOOG", Price = 518.66m }
                 };
 
             allMarketData.ForEach(marketData => _allMarketData.TryAdd(marketData.SecurityId, marketData));
@@ -128,7 +139,8 @@ namespace Infusion.Trading.MarketData.SignalRBridge
 
                     foreach (var marketData in _allMarketData.Values)
                     {
-                        if (TryUpdateMarketDataPrice(marketData))
+                        if (TryUpdateMarketDataPrice(marketData)
+                            && (filterBySecurityIds.Count == 0 || filterBySecurityIds.Contains(marketData.SecurityId)))
                         {
                             OnMarketDataChanged(marketData);
                         }
@@ -139,7 +151,7 @@ namespace Infusion.Trading.MarketData.SignalRBridge
             }
         }
 
-        private bool TryUpdateMarketDataPrice(MarketData stock)
+        private bool TryUpdateMarketDataPrice(Quote stock)
         {
             // Randomly choose whether to update
             double r = _updateOrNotRandom.NextDouble();
@@ -167,12 +179,16 @@ namespace Infusion.Trading.MarketData.SignalRBridge
             }
         }
 
-        private void OnMarketDataChanged(MarketData marketData)
+        private void OnMarketDataChanged(Quote marketData)
         {
             if (MarketDataChanged != null)
             {
                 MarketDataChanged(this, marketData);
             }
+        }
+
+        public void Dispose()
+        {
         }
     }
 }

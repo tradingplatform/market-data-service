@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics.Contracts;
 
-namespace Infusion.Trading.MarketData.SignalRBridge
+namespace Infusion.Trading.MarketData
 {
-    public class MarketData
+    public class Quote
     {
         private decimal _price;
 
@@ -65,6 +62,19 @@ namespace Infusion.Trading.MarketData.SignalRBridge
                     DayHigh = _price;
                 }
             }
+        }
+
+        public Quote()
+        {
+        }
+
+        public Quote(string securityId, decimal price, decimal lastChange)
+        {
+            Contract.Requires(!string.IsNullOrWhiteSpace(securityId));
+
+            this.SecurityId = securityId;
+            this.Price = price;
+            this.LastChange = lastChange;
         }
     }
 }

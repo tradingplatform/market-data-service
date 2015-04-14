@@ -1,7 +1,28 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infusion.Trading.MarketData.SignalRBridge", "Infusion.Trading.MarketData.SignalRBridge\Infusion.Trading.MarketData.SignalRBridge.csproj", "{DEB0E342-9E4C-4DE3-9392-A8068812018D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{2A59A81F-5A6D-42A1-AF0E-E774AABE294F}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8A6B726C-8816-4778-AB0C-63DB48D9C0F2}"
+	ProjectSection(SolutionItems) = preProject
+		GoogleFinanceResponse-Example.json = GoogleFinanceResponse-Example.json
+		Infusion.Trading.vssettings = Infusion.Trading.vssettings
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infusion.Trading.MarketData.Labs", "Infusion.Trading.MarketData.Labs\Infusion.Trading.MarketData.Labs.csproj", "{99F8DD19-EFFB-4356-8A73-40C7C0692DD4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infusion.Trading.MarketData.QuoteService", "Infusion.Trading.MarketData.QuoteService\Infusion.Trading.MarketData.QuoteService.csproj", "{E588E687-7880-4F6E-91BC-DD1ECAB3CBA9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infusion.Trading.MarketData", "Infusion.Trading.MarketData\Infusion.Trading.MarketData.csproj", "{F8B2ACE2-B375-4FE1-B38C-1C2137DBC379}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,6 +34,18 @@ Global
 		{DEB0E342-9E4C-4DE3-9392-A8068812018D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DEB0E342-9E4C-4DE3-9392-A8068812018D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DEB0E342-9E4C-4DE3-9392-A8068812018D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99F8DD19-EFFB-4356-8A73-40C7C0692DD4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99F8DD19-EFFB-4356-8A73-40C7C0692DD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99F8DD19-EFFB-4356-8A73-40C7C0692DD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99F8DD19-EFFB-4356-8A73-40C7C0692DD4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E588E687-7880-4F6E-91BC-DD1ECAB3CBA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E588E687-7880-4F6E-91BC-DD1ECAB3CBA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E588E687-7880-4F6E-91BC-DD1ECAB3CBA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E588E687-7880-4F6E-91BC-DD1ECAB3CBA9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8B2ACE2-B375-4FE1-B38C-1C2137DBC379}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8B2ACE2-B375-4FE1-B38C-1C2137DBC379}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8B2ACE2-B375-4FE1-B38C-1C2137DBC379}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8B2ACE2-B375-4FE1-B38C-1C2137DBC379}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
